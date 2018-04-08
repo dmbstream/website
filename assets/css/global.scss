@@ -1,0 +1,27 @@
+@import "./_chat";
+@import "./_footer";
+@import "./_details";
+
+.sidebar {
+  padding-bottom: 104px !important;
+}
+
+.profile__nav {
+  padding-left: 0.75rem !important;
+}
+
+.profile {
+  background-image: url(https://lh3.googleusercontent.com/-oqeZNsG4ypI/AAAAAAAAAAI/AAAAAAAAAAA/AFiYof1OzfhH0krOuur7voBYHZlMxDeC-A/s64-c-mo/photo.jpg);
+  background-size: 32px 32px;
+  border-radius: 50%;
+  margin: -1px;
+  overflow: hidden;
+  position: relative;
+  height: 32px;
+  width: 32px;
+  display: block;
+}
+
+
+
+

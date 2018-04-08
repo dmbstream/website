@@ -1,0 +1,107 @@
+  .content {
+    padding-bottom: 120px !important;
+  }
+
+  .content-sidebar-right {
+    padding-right: 300px !important;
+  }
+
+  .content__title {
+    padding-left: 0;
+  }
+
+  .content__title h1 {
+    font-size: 2rem;
+  }
+
+  .btn-wide {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
+
+  .tracklist {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    list-style: none;
+  }
+
+  .tracklist-row {
+    transition-property: background-color;
+    transition-duration: .2s;
+    transition-timing-function: linear;
+    display: -ms-flexbox;
+    display: flex;
+    height: 4.56em;
+    list-style-type: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none
+  }
+
+  .tracklist-play-pause {
+    display: none;
+  }
+
+  .tracklist-row:focus, .tracklist-row:hover {
+    background-color: rgba(0, 0, 0, .1)
+  }
+
+  .tracklist-row:focus .tracklist-play-pause, .tracklist-row:hover .tracklist-play-pause {
+    display: block
+  }
+
+  .tracklist-row:focus .position, .tracklist-row:hover .position {
+    display: none
+  }
+
+  .tracklist-row:focus .more, .tracklist-row:hover .more {
+    display: block
+  }
+
+  .tracklist-col.position-outer {
+    font-feature-settings: "tnum";
+    letter-spacing: 0;
+    text-align: right;
+    padding-right: 1em;
+    width: 3em
+  }
+
+  .tracklist-col.name {
+    flex: 1;
+  }
+
+  .tracklist-row .more {
+    display: none;
+    text-align: right;
+    padding-right: 1em
+  }
+
+  .tracklist-play-pause,
+  .more {
+    font-size: 2rem;
+  }
+
+  .tracklist-col-duration {
+    font-feature-settings: "tnum";
+    letter-spacing: 0;
+    text-align: right;
+    padding-right: 1em;
+    width: 3.9em
+  }
+
+  .track__note small {
+    font-size: 70%;
+    color: #AAA;
+  }
+
+  .tracklist-top-align {
+    margin-top: 0.5rem;
+  }
+
+  .tracklist-middle-align {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%)
+  }

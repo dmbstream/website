@@ -1,0 +1,20 @@
+.sidebar-right {
+  left: inherit;
+  right: 0;
+  padding: 72px 0 .5rem;
+}
+
+.chat-row {
+  transition-property: background-color;
+  transition-duration: .1s;
+  transition-timing-function: linear;
+}
+
+.chat-row:focus, .chat-row:hover {
+  background-color: rgba(0, 0, 0, .03)
+}
+
+.chat-author {
+  color: #707070;
+  font-weight: 500;
+}
