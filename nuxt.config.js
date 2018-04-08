@@ -20,6 +20,9 @@ module.exports = {
   css: [
     '~/assets/css/global.scss',
   ],
+  modules: [
+    ['bootstrap-vue/nuxt', { css: false }],
+  ],
   render: {
     bundleRenderer: {
       shouldPreload: (file, type) => {

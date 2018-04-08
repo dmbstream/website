@@ -16,45 +16,35 @@
               </template>
             </div>
             <div class="card-body">
-              <div class="dropdown">
-                <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" id="PopularConcertsDuration" aria-haspopup="true" aria-expanded="false">
-                  This Week
-                </button>
-                <div class="dropdown-menu" aria-labelledby="PopularConcertsDuration">
-                  <button class="dropdown-item" type="button">This Week</button>
-                  <button class="dropdown-item" type="button">All Time</button>
-                </div>
-              </div>
+              <b-dropdown :text="popularConcertsTimeSpan">
+                <b-dropdown-item-button @click="changePopularConcertsTimeSpan('This week')">This week</b-dropdown-item-button>
+                <b-dropdown-item-button @click="changePopularConcertsTimeSpan('All time')">All time</b-dropdown-item-button>
+              </b-dropdown>
             </div>
           </div>
         </div>
 
-        <!--        <div class="card">
-                  <div class="card-header">
-                    <h2 class="card-title">Most Popular Tracks</h2>
-                  </div>
-                  <div class="card-block">
-                    <div class="row">
-                      <div class="col-2"><nuxt-link to="/artists/1/dave-matthews-band" title="Dave Matthews Band">dmb</nuxt-link></div>
-                      <div class="col"><nuxt-link to="/concerts/2001/04/21/scott-stadium?t=3">2001-04-21: Grey St</nuxt-link></div>
-                    </div>
-                    <div class="row">
-                      <div class="col-2"><nuxt-link to="/artists/2/dave-matthews" title="Dave Matthews (Solo)">dm</nuxt-link></div>
-                      <div class="col"><nuxt-link to="/concerts/2018/01/06/radio-city-music-hall?t=4">2018-01-06: Don't Drink The Water</nuxt-link></div>
-                    </div>
-                  </div>
-                  <div class="card-body">
-                    <div class="dropdown">
-                      <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" id="PopularTracksDuration" aria-haspopup="true" aria-expanded="false">
-                        This Week
-                      </button>
-                      <div class="dropdown-menu" aria-labelledby="PopularTracksDuration">
-                        <button class="dropdown-item" type="button">This Week</button>
-                        <button class="dropdown-item" type="button">All Time</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>-->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title">Most Popular Tracks</h2>
+          </div>
+          <div class="card-block" v-if="popularTracksLoading">
+            Loading...
+          </div>
+          <div v-else>
+            <div class="card-block">
+              <template v-for="track in popularTracks">
+                <track-with-artist-link-row :track="track" :key="track.id"/>
+              </template>
+            </div>
+            <div class="card-body">
+              <b-dropdown :text="popularTracksTimeSpan">
+                <b-dropdown-item-button @click="changePopularTracksTimeSpan('This week')">This week</b-dropdown-item-button>
+                <b-dropdown-item-button @click="changePopularTracksTimeSpan('All time')">All time</b-dropdown-item-button>
+              </b-dropdown>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="col-md">
         <div class="card">
@@ -97,7 +87,9 @@
 </template>
 
 <script>
+  import moment from 'moment';
   import ConcertAndArtistLinkRow from '../components/ConcertAndArtistLinkRow';
+  import TrackWithArtistLinkRow from "../components/TrackWithArtistLinkRow";
   import TourBreadcrumbRow from '../components/TourBreadcrumbRow';
   import axios from '../plugins/axios';
   import take from 'lodash/take';
@@ -105,21 +97,27 @@
   export default {
     components: {
       ConcertAndArtistLinkRow,
+      TrackWithArtistLinkRow,
       TourBreadcrumbRow,
     },
     data() {
       return {
         popularConcertsLoading: true,
         popularConcerts: [],
+        popularTracksLoading: true,
+        popularTracks: [],
         newConcertsLoading: true,
         newConcerts: [],
         latestConcertsLoading: true,
         latestConcertsByTour: [],
+        popularConcertsTimeSpan: 'This week',
+        popularTracksTimeSpan: 'This week',
       };
     },
     async asyncData() {
       const [
         popularConcertResults,
+        popularTrackResults,
         newConcertResults,
         latestConcertResults,
         tourResults,
@@ -128,6 +126,14 @@
           params: {
             sortDesc: 'PlayCount',
             itemsPerPage: 10,
+            startDate: moment().subtract(1, 'w').startOf('day').toDate(),
+          }
+        }),
+        axios.get('/api/tracks', {
+          params: {
+            sortDesc: 'PlayCount',
+            itemsPerPage: 10,
+            startDate: moment().subtract(1, 'w').startOf('day').toDate(),
           }
         }),
         axios.get('/api/concerts', {
@@ -145,6 +151,8 @@
         axios.get('/api/tours'),
       ]);
 
+      console.log(popularTrackResults.response);
+
       const toursById = {};
       for (const tour of tourResults.data.items) {
         toursById[tour.id] = tour;
@@ -158,7 +166,7 @@
       }
 
       const latestConcertsByTour = [];
-      for (const concert of take(latestConcertResults.data.items, 10)) {
+      for (const concert of take(latestConcertResults.data.items, 20)) {
         if (!latestConcertsByTour.length || latestConcertsByTour[latestConcertsByTour.length - 1].tour.id !== concert.tour.id) {
           latestConcertsByTour.push({
             tour: toursById[concert.tour.id],
@@ -171,13 +179,47 @@
 
       return {
         popularConcertsLoading: false,
+        popularTracksLoading: false,
         newConcertsLoading: false,
         latestConcertsLoading: false,
         popularConcerts: take(popularConcertResults.data.items, 10),
+        popularTracks: take(popularTrackResults.data.items, 10),
         newConcerts: take(newConcertResults.data.items, 10),
         latestConcertsByTour,
         toursById,
       };
+    },
+    methods: {
+      async changePopularConcertsTimeSpan(timeSpan) {
+        this.popularConcertsTimeSpan = timeSpan;
+
+        this.popularConcertsLoading = true;
+        const concertResults = await axios.get('/api/concerts', {
+          params: {
+            sortDesc: 'PlayCount',
+            itemsPerPage: 10,
+            startDate: timeSpan === 'This week' ? moment().subtract(1, 'w').startOf('day').toDate() : undefined,
+          }
+        });
+
+        this.popularConcerts = concertResults.data.items;
+        this.popularConcertsLoading = false;
+      },
+      async changePopularTracksTimeSpan(timeSpan) {
+        this.popularTracksTimeSpan = timeSpan;
+
+        this.popularTracksLoading = true;
+        const trackResults = await axios.get('/api/tracks', {
+          params: {
+            sortDesc: 'PlayCount',
+            itemsPerPage: 10,
+            startDate: timeSpan === 'This week' ? moment().subtract(1, 'w').startOf('day').toDate() : undefined,
+          }
+        });
+
+        this.popularTracks = trackResults.data.items;
+        this.popularTracksLoading = false;
+      },
     },
     head() {
       return {
