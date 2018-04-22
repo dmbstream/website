@@ -6,7 +6,7 @@
         id: track.concert.artist.id,
         slug: slugify(track.concert.artist.name),
       },
-    }" :title="concert.artist.name">{{ track.concert.artist.abbr }}</nuxt-link></div>
+    }" :title="track.concert.artist.name">{{ track.concert.artist.abbr }}</nuxt-link></div>
     <div class="col"><nuxt-link :to="{
       name: 'concerts-year-month-day-slug',
       params: {
@@ -14,7 +14,9 @@
         year: concertDate.format('YYYY'),
         month: concertDate.format('MM'),
         day: concertDate.format('DD'),
-        slug: slugify(track.concert.venue.name),
+        slug: slugify(track.concert.name),
+      },
+      query: {
         t: track.id,
       },
     }">{{ concertDate | toDate }}: {{ track.name }}</nuxt-link></div>

@@ -124,16 +124,16 @@
       ] = await Promise.all([
         axios.get('/api/concerts', {
           params: {
-            sortDesc: 'PlayCount',
+            sortDesc: 'Popular',
             itemsPerPage: 10,
-            startDate: moment().subtract(1, 'w').startOf('day').toDate(),
+            since: moment().subtract(1, 'w').startOf('day').toDate(),
           }
         }),
         axios.get('/api/tracks', {
           params: {
-            sortDesc: 'PlayCount',
+            sortDesc: 'Popular',
             itemsPerPage: 10,
-            startDate: moment().subtract(1, 'w').startOf('day').toDate(),
+            since: moment().subtract(1, 'w').startOf('day').toDate(),
           }
         }),
         axios.get('/api/concerts', {
@@ -196,13 +196,13 @@
         this.popularConcertsLoading = true;
         const concertResults = await axios.get('/api/concerts', {
           params: {
-            sortDesc: 'PlayCount',
+            sortDesc: 'Popular',
             itemsPerPage: 10,
-            startDate: timeSpan === 'This week' ? moment().subtract(1, 'w').startOf('day').toDate() : undefined,
+            since: timeSpan === 'This week' ? moment().subtract(1, 'w').startOf('day').toDate() : undefined,
           }
         });
 
-        this.popularConcerts = concertResults.data.items;
+        this.popularConcerts = take(concertResults.data.items, 10);
         this.popularConcertsLoading = false;
       },
       async changePopularTracksTimeSpan(timeSpan) {
@@ -211,13 +211,13 @@
         this.popularTracksLoading = true;
         const trackResults = await axios.get('/api/tracks', {
           params: {
-            sortDesc: 'PlayCount',
+            sortDesc: 'Popular',
             itemsPerPage: 10,
-            startDate: timeSpan === 'This week' ? moment().subtract(1, 'w').startOf('day').toDate() : undefined,
+            since: timeSpan === 'This week' ? moment().subtract(1, 'w').startOf('day').toDate() : undefined,
           }
         });
 
-        this.popularTracks = trackResults.data.items;
+        this.popularTracks = take(trackResults.data.items, 10);
         this.popularTracksLoading = false;
       },
     },
