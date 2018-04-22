@@ -1,7 +1,7 @@
 <template>
-  <div class="pb-2">
+  <h6 class="pb-2">
     <tour-breadcrumb :tour="tour" :toursById="toursById" />
-  </div>
+  </h6>
 </template>
 
 <script>

@@ -72,7 +72,7 @@
           </div>
           <div v-else>
             <div class="card-block">
-              <div v-for="tourHolder in latestConcertsByTour" :key="tourHolder.concerts[0].id" class="pb-2">
+              <div v-for="tourHolder in latestConcertsByTour" :key="tourHolder.concerts[0].id" class="pb-4">
                 <tour-breadcrumb-row :tour="tourHolder.tour" :toursById="toursById" :key="tourHolder.tour.id" />
                 <template v-for="concert in tourHolder.concerts">
                   <concert-and-artist-link-row :concert="concert" :key="concert.id"/>
@@ -95,6 +95,7 @@
   import take from 'lodash/take';
 
   export default {
+    scrollToTop: true,
     components: {
       ConcertAndArtistLinkRow,
       TrackWithArtistLinkRow,
@@ -112,6 +113,7 @@
         latestConcertsByTour: [],
         popularConcertsTimeSpan: 'This week',
         popularTracksTimeSpan: 'This week',
+        toursById: {},
       };
     },
     async asyncData() {
@@ -150,8 +152,6 @@
         }),
         axios.get('/api/tours'),
       ]);
-
-      console.log(popularTrackResults.response);
 
       const toursById = {};
       for (const tour of tourResults.data.items) {
