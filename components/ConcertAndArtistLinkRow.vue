@@ -14,9 +14,9 @@
         year: concertDate.format('YYYY'),
         month: concertDate.format('MM'),
         day: concertDate.format('DD'),
-        slug: slugify(concert.venue.name),
+        slug: slugify(concert.name),
       },
-    }">{{ concertDate | toDate }}: {{ concert.venue.name }}</nuxt-link></div>
+    }">{{ concertDate | toDate }}: {{ concert.name }}</nuxt-link></div>
   </div>
 </template>
 
