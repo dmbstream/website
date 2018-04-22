@@ -182,8 +182,8 @@
         popularTracksLoading: false,
         newConcertsLoading: false,
         latestConcertsLoading: false,
-        popularConcerts: take(popularConcertResults.data.items, 10),
-        popularTracks: take(popularTrackResults.data.items, 10),
+        popularConcerts: take(popularConcertResults.data.items, 15),
+        popularTracks: take(popularTrackResults.data.items, 15),
         newConcerts: take(newConcertResults.data.items, 10),
         latestConcertsByTour,
         toursById,
@@ -202,7 +202,7 @@
           }
         });
 
-        this.popularConcerts = take(concertResults.data.items, 10);
+        this.popularConcerts = take(concertResults.data.items, 15);
         this.popularConcertsLoading = false;
       },
       async changePopularTracksTimeSpan(timeSpan) {
@@ -217,7 +217,7 @@
           }
         });
 
-        this.popularTracks = take(trackResults.data.items, 10);
+        this.popularTracks = take(trackResults.data.items, 15);
         this.popularTracksLoading = false;
       },
     },
