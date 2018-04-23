@@ -1,6 +1,6 @@
 <template>
   <h6 class="pb-2">
-    <tour-breadcrumb :tour="tour" :toursById="toursById" />
+    <tour-breadcrumb :tour="tour" :skip-parent="skipParent" :toursById="toursById" />
   </h6>
 </template>
 
@@ -15,6 +15,9 @@
       tour: {
         type: Object,
         required: true,
+      },
+      skipParent: {
+        type: Boolean,
       },
       toursById: {
         type: Object,

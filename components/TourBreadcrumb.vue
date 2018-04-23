@@ -24,6 +24,9 @@
         type: Object,
         required: true,
       },
+      skipParent: {
+        type: Boolean,
+      },
       toursById: {
         type: Object,
         required: true,
@@ -34,7 +37,7 @@
     },
     computed: {
       parent() {
-        if (this.tour.parent) {
+        if (this.tour.parent && !this.skipParent) {
           return this.toursById[this.tour.parent];
         }
 
