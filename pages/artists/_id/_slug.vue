@@ -119,7 +119,8 @@
         console.log(artist);
         return error({
           statusCode: 404,
-          message: 'Artist not found'
+          message: 'Artist not found',
+          response: artistResult,
         });
       }
 
