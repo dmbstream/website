@@ -1,13 +1,13 @@
 <template>
   <div class="row">
-    <div class="col-2"><nuxt-link :to="{
+    <div :class="artistClass"><nuxt-link :to="{
       name: 'artists-id-slug',
       params: {
         id: concert.artist.id,
         slug: slugify(concert.artist.name),
       },
     }" :title="concert.artist.name">{{ concert.artist.abbr }}</nuxt-link></div>
-    <div class="col"><nuxt-link :to="{
+    <div class="col-auto"><nuxt-link :to="{
       name: 'concerts-year-month-day-slug',
       params: {
         id: concert.id,
@@ -30,6 +30,10 @@
         type: Object,
         required: true,
       },
+      compact: {
+        type: Boolean,
+        default: true,
+      },
     },
     methods: {
       slugify: stringService.slugify
@@ -37,6 +41,9 @@
     computed: {
       concertDate() {
         return moment(this.concert.date);
+      },
+      artistClass() {
+        return this.compact ? 'col-2' : 'col-1';
       },
     },
     filters: {

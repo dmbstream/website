@@ -1,17 +1,25 @@
 <template>
   <section class="content content-sidebar-right">
-    <div v-if="tour.parent">
-      <small>
-        <nuxt-link :to="{
-          name: 'tours-id-slug',
-          params: {
-            id: tour.parent.id,
-            slug: slugify(tour.parent.name),
-          },
-        }">&larr; {{ tour.parent.name }}</nuxt-link>
-      </small>
-      <br />
-    </div>
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <nuxt-link :to="{
+            name: 'tours',
+          }">Tours</nuxt-link>
+        </li>
+        <li class="breadcrumb-item" v-if="tour.parent">
+          <nuxt-link :to="{
+            name: 'tours-slug',
+            params: {
+              slug: tour.parent.slug,
+            },
+          }" v-if="tour.parent">{{ tour.parent.name }}</nuxt-link>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+          {{ tour.name }}
+        </li>
+      </ol>
+    </nav>
 
     <header class="content__title" v-if="tour.name">
       <h1>{{ tour.name }}</h1>
@@ -43,7 +51,7 @@
           <div v-for="tourHolder in concertsByTour" :key="tourHolder.concerts[0].id" class="pb-4">
             <tour-breadcrumb-row :tour="tourHolder.tour" :toursById="toursById" :key="tourHolder.tour.id" :skipParent="true" v-if="tourHolder.tour.id !== tour.id" />
             <template v-for="concert in tourHolder.concerts">
-              <concert-and-artist-link-row :concert="concert" :key="concert.id"/>
+              <concert-and-artist-link-row :concert="concert" :key="concert.id" :compact="false" />
             </template>
           </div>
         </div>
@@ -77,7 +85,7 @@
       params,
       error,
                     }) {
-      const tourResult = await axios.get(`/api/tours/${params.id}`);
+      const tourResult = await axios.get(`/api/tours/${params.slug}`);
 
       const tour = tourResult.data;
 
@@ -93,7 +101,7 @@
         concertResults,
         tourResults,
       ] = await Promise.all([
-        axios.get(`/api/tours/${tour.id}/concerts`, {
+        axios.get(`/api/tours/${tour.slug}/concerts`, {
           params: {
             itemsPerPage: 5000,
           }

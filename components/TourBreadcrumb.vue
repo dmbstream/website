@@ -5,10 +5,9 @@
       &raquo;
     </span>
     <nuxt-link :to="{
-      name: 'tours-id-slug',
+      name: 'tours-slug',
       params: {
-        id: tour.id,
-        slug: slugify(tour.name),
+        slug: tour.slug,
       },
     }" :title="tour.name">{{ tour.name }}</nuxt-link>
   </span>
