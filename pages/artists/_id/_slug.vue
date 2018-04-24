@@ -1,5 +1,18 @@
 <template>
   <section class="content content-sidebar-right">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <nuxt-link :to="{
+            name: 'artists',
+          }">Artists</nuxt-link>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+          {{ artist.name }}
+        </li>
+      </ol>
+    </nav>
+
     <header class="content__title" v-if="artist.name">
       <h1>{{ artist.name }}</h1>
     </header>
