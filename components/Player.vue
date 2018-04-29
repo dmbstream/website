@@ -16,7 +16,13 @@
         <div class="footer__player__playback__progressTime">00:00</div>
         <div class="footer__player__playback__progress">
           <div class="progress">
-            <div class="progress-bar" role="progressbar" style="width: 42%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+            <div 
+              class="progress-bar" 
+              role="progressbar" 
+              style="width: 42%" 
+              aria-valuenow="50" 
+              aria-valuemin="0" 
+              aria-valuemax="100"></div>
           </div>
         </div>
         <div class="footer__player__playback__totalTime">06:42</div>
@@ -32,7 +38,13 @@
             </div>
             <div class="volume-progress">
               <div class="progress">
-                <div class="progress-bar" role="progressbar" style="width: 72%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                <div 
+                  class="progress-bar" 
+                  role="progressbar" 
+                  style="width: 72%" 
+                  aria-valuenow="50" 
+                  aria-valuemin="0" 
+                  aria-valuemax="100"></div>
               </div>
             </div>
           </div>

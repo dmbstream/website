@@ -3,8 +3,9 @@
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
-          <nuxt-link :to="{
-            name: 'artists',
+          <nuxt-link 
+            :to="{
+              name: 'artists',
           }">Artists</nuxt-link>
         </li>
         <li class="breadcrumb-item active" aria-current="page">
@@ -47,7 +48,7 @@
           <div v-else>
             <div class="card-block">
               <div v-for="tourHolder in latestConcertsByTour" :key="tourHolder.concerts[0].id" class="pb-4">
-                <tour-breadcrumb-row :tour="tourHolder.tour" :toursById="toursById" :key="tourHolder.tour.id" />
+                <tour-breadcrumb-row :tour="tourHolder.tour" :tours-by-id="toursById" :key="tourHolder.tour.id" />
                 <template v-for="concert in tourHolder.concerts">
                   <concert-link-row :concert="concert" :key="concert.id"/>
                 </template>

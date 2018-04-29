@@ -15,24 +15,28 @@
         <div class="card-block">
           <div v-for="tour in tours" :key="tour.id">
             <h5>
-              <nuxt-link :to="{
-                name: 'tours-slug',
-                params: {
-                  slug: tour.slug,
-                },
-              }" :title="tour.name">
+              <nuxt-link 
+                :to="{
+                  name: 'tours-slug',
+                  params: {
+                    slug: tour.slug,
+                  },
+                }" 
+                :title="tour.name">
                 {{ tour.name }}
               </nuxt-link>
               ({{ tour.concert_count }})
             </h5>
             <ul v-if="tour.children && tour.children.length" class="list-unstyled pl-4">
               <li v-for="child in tour.children" :key="child.id">
-                <nuxt-link :to="{
-                  name: 'tours-slug',
-                  params: {
-                    slug: child.slug,
-                  },
-                }" :title="child.name">
+                <nuxt-link 
+                  :to="{
+                    name: 'tours-slug',
+                    params: {
+                      slug: child.slug,
+                    },
+                  }" 
+                  :title="child.name">
                   {{ child.name }}
                 </nuxt-link>
                 ({{ child.concert_count }})

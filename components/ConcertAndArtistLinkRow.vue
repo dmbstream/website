@@ -1,21 +1,24 @@
 <template>
   <div class="row">
-    <div :class="artistClass"><nuxt-link :to="{
-      name: 'artists-id-slug',
-      params: {
-        id: concert.artist.id,
-        slug: slugify(concert.artist.name),
-      },
-    }" :title="concert.artist.name">{{ concert.artist.abbr }}</nuxt-link></div>
-    <div class="col"><nuxt-link :to="{
-      name: 'concerts-year-month-day-slug',
-      params: {
-        id: concert.id,
-        year: concertDate.format('YYYY'),
-        month: concertDate.format('MM'),
-        day: concertDate.format('DD'),
-        slug: slugify(concert.name),
-      },
+    <div :class="artistClass"><nuxt-link 
+      :to="{
+        name: 'artists-id-slug',
+        params: {
+          id: concert.artist.id,
+          slug: slugify(concert.artist.name),
+        },
+      }" 
+      :title="concert.artist.name">{{ concert.artist.abbr }}</nuxt-link></div>
+    <div class="col"><nuxt-link 
+      :to="{
+        name: 'concerts-year-month-day-slug',
+        params: {
+          id: concert.id,
+          year: concertDate.format('YYYY'),
+          month: concertDate.format('MM'),
+          day: concertDate.format('DD'),
+          slug: slugify(concert.name),
+        },
     }">{{ concertDate | toDate }}: {{ concert.name }}</nuxt-link></div>
   </div>
 </template>

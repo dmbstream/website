@@ -1,6 +1,11 @@
 <template>
   <div class="p-2 w-100">
-    <input type="text" placeholder="Send a message" class="p-2 w-100" v-model="message" @keyup.enter="sendMessage"/>
+    <input 
+      type="text" 
+      placeholder="Send a message" 
+      class="p-2 w-100" 
+      v-model="message" 
+      @keyup.enter="sendMessage"/>
   </div>
 </template>
 

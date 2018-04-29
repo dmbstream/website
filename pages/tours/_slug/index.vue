@@ -3,17 +3,20 @@
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
         <li class="breadcrumb-item">
-          <nuxt-link :to="{
-            name: 'tours',
+          <nuxt-link 
+            :to="{
+              name: 'tours',
           }">Tours</nuxt-link>
         </li>
         <li class="breadcrumb-item" v-if="tour.parent">
-          <nuxt-link :to="{
-            name: 'tours-slug',
-            params: {
-              slug: tour.parent.slug,
-            },
-          }" v-if="tour.parent">{{ tour.parent.name }}</nuxt-link>
+          <nuxt-link 
+            :to="{
+              name: 'tours-slug',
+              params: {
+                slug: tour.parent.slug,
+              },
+            }" 
+            v-if="tour.parent">{{ tour.parent.name }}</nuxt-link>
         </li>
         <li class="breadcrumb-item active" aria-current="page">
           {{ tour.name }}
@@ -49,7 +52,12 @@
       <div v-else>
         <div class="card-block">
           <div v-for="tourHolder in concertsByTour" :key="tourHolder.concerts[0].id" class="pb-4">
-            <tour-breadcrumb-row :tour="tourHolder.tour" :toursById="toursById" :key="tourHolder.tour.id" :skipParent="true" v-if="tourHolder.tour.id !== tour.id" />
+            <tour-breadcrumb-row 
+              :tour="tourHolder.tour" 
+              :tours-by-id="toursById" 
+              :key="tourHolder.tour.id" 
+              :skip-parent="true" 
+              v-if="tourHolder.tour.id !== tour.id" />
             <template v-for="concert in tourHolder.concerts">
               <concert-and-artist-link-row :concert="concert" :key="concert.id" :compact="false" />
             </template>

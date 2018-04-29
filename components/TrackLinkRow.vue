@@ -1,17 +1,18 @@
 <template>
   <div class="row">
-    <div class="col"><nuxt-link :to="{
-      name: 'concerts-year-month-day-slug',
-      params: {
-        id: track.concert.id,
-        year: concertDate.format('YYYY'),
-        month: concertDate.format('MM'),
-        day: concertDate.format('DD'),
-        slug: slugify(track.concert.name),
-      },
-      query: {
-        t: track.id,
-      },
+    <div class="col"><nuxt-link 
+      :to="{
+        name: 'concerts-year-month-day-slug',
+        params: {
+          id: track.concert.id,
+          year: concertDate.format('YYYY'),
+          month: concertDate.format('MM'),
+          day: concertDate.format('DD'),
+          slug: slugify(track.concert.name),
+        },
+        query: {
+          t: track.id,
+        },
     }">{{ concertDate | toDate }}: {{ track.name }}</nuxt-link></div>
   </div>
 </template>

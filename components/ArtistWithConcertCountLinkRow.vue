@@ -1,11 +1,12 @@
 <template>
   <div class="row">
-    <div class="col"><nuxt-link :to="{
-      name: 'artists-id-slug',
-      params: {
-        id: artist.id,
-        slug: slugify(artist.name),
-      },
+    <div class="col"><nuxt-link 
+      :to="{
+        name: 'artists-id-slug',
+        params: {
+          id: artist.id,
+          slug: slugify(artist.name),
+        },
     }">{{ artist.name }} ({{ artist.concert_count }} concerts)</nuxt-link></div>
   </div>
 </template>
