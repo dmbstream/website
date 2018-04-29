@@ -7,7 +7,7 @@
         slug: slugify(concert.artist.name),
       },
     }" :title="concert.artist.name">{{ concert.artist.abbr }}</nuxt-link></div>
-    <div class="col-auto"><nuxt-link :to="{
+    <div class="col"><nuxt-link :to="{
       name: 'concerts-year-month-day-slug',
       params: {
         id: concert.id,
