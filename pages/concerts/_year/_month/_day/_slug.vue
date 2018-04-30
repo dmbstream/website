@@ -1,16 +1,21 @@
 <template>
   <section class="content content-sidebar-right">
-    <div class="d-flex w-100 justify-content-between">
-      <small><a href="#">&larr; 2016-02-12 &mdash; Beneroyal Hall</a></small>
-      <small><a href="#">2016-02-26 &mdash; The O2 &rarr;</a></small>
+    <div class="d-flex w-100 justify-content-between mb-2" v-if="nextConcert || previousConcert">
+      <small v-if="previousConcert">
+        <previous-concert-link :concert="previousConcert" />
+      </small>
+      <small v-if="nextConcert">
+        <next-concert-link :concert="nextConcert" />
+      </small>
     </div>
-    <br/>
-    <header class="content__title">
-      <h1>2016-02-14 &mdash; Radio City Music Hall</h1>
 
+    <header class="content__title">
+      <h1>{{ concertDate | toDate }} &mdash; {{ concert.name }}</h1>
+
+      <!--
       <div class="actions">
         <a href="#" class="actions__item" title="Favorite"><i class="zmdi zmdi-favorite-outline"></i></a>
-      </div>
+      </div>-->
     </header>
 
     <p>
@@ -24,33 +29,49 @@
           <tbody>
             <tr>
               <th>Artist</th>
-              <td>Dave Matthews and Tim Reynolds</td>
+              <td>
+                <nuxt-link
+                  :to="{
+                    name: 'artists-id-slug',
+                    params: {
+                      id: concert.artist.id,
+                      slug: slugify(concert.artist.name),
+                    },
+                  }"
+                  :title="concert.artist.name">{{ concert.artist.name }}</nuxt-link>
+              </td>
             </tr>
             <tr>
               <th>Date</th>
-              <td>Feb 14, 2016</td>
+              <td>{{ concertDate.format('MMM D, YYYY') }}</td>
             </tr>
             <tr>
               <th>Tour</th>
               <td>
-                <span class="breadcrumb">
-                  <a href="/tours/2016" class="breadcrumb-item">2016</a>
-                  <a href="/tours/2016-dt" class="breadcrumb-item">Dave and Tim Winter 2016</a>
-                </span>
+                <tour-breadcrumb :tour="concert.tour" :tours-by-id="toursById" />
               </td>
             </tr>
             <tr>
               <th>Venue</th>
               <td>
                 <span class="location vcard">
-                  <a href="/Venues/Detail/17/saratoga-performing-arts-center" class="url"><span class="fn n org">Saratoga Performing Arts Center</span></a><br>
-                  <span class="adr">
-                    <span class="street-address">108 Avenue of the Pines</span><br>
-                    <span class="locality">Saratoga Springs</span>,
-                    <span class="region">NY</span> <span class="country-name" style="display:none">United States</span>
-                    <span class="postal-code">12866</span>
-                    <span class="geo" style="display: none;"><span class="latitude">43.063091</span><span class="longitude">-73.789744</span></span>
-                  </span>
+                  <nuxt-link
+                    :to="{
+                      name: 'venues-id-slug',
+                      params: {
+                        id: concert.venue.id,
+                        slug: slugify(concert.venue.name),
+                      },
+                    }"
+                    :title="concert.venue.name"
+                    class="url"><span class="fn n org">{{ concert.venue.name }}</span></nuxt-link>
+                  <div class="adr">
+                    <span class="street-address">{{ concert.venue.address }}</span><br>
+                    <span class="locality">{{ concert.venue.city }}</span>,
+                    <span class="region">{{ concert.venue.state }}</span>
+                    <span class="country-name" v-show="concert.venue.country !== 'United States'">{{ concert.venue.country }}</span>
+                    <span class="postal-code">{{ ` ${concert.venue.postal_code}` }}</span>
+                  </div>
                 </span>
               </td>
             </tr>
@@ -335,46 +356,69 @@
                                   </table>
                               </div>
       -->
+      <div class="card-block" v-if="concert.notes">
+        <template v-for="line of concert.notes.trim().split('\n')">
+          {{ line }}
+          <br :key="line" />
+        </template>
+      </div>
     </div>
 
     <div class="card">
-      <div class="card-block">
-        <p>Taper: Chris Drews<br/>
-          Source: AKG ck63 (DINa-ish, ~16') > NBob Actives > UA-5 (w-mod) > IRiver iHP-120 (Rockbox)<br/>
-          Location: Section 40, Row F, Seats 22+23<br/>
-          Conversion: IRiver iHP-120 > USB > MacBook > Sound Studio 3.5.7 > xACT 1.64 > FLAC</p>
+      <div class="card-block" v-if="concert.recording_information">
+        <template v-for="line of concert.recording_information.trim().split('\n')">
+          {{ line }}
+          <br :key="line" />
+        </template>
       </div>
     </div>
     <div class="row">
-      <div class="col-sm-6">
-        <div class="card">
+      <div class="col">
+        <div class="card" v-if="relatedConcertsLoading || relatedConcerts.length">
           <div class="card-header">
-            <h2 class="card-title">2016 Tour</h2>
+            <h2 class="card-title">Related Concerts</h2>
           </div>
-          <div class="card-block">
-            <ul>
-              <li><a href="#">2016-01-01 :: Purdue University</a></li>
-              <li><a href="#">2016-01-02 :: The O2</a></li>
-              <li><a href="#">2016-01-06 :: Benneroyal Hall</a></li>
-            </ul>
+          <div class="card-block" v-if="relatedConcertsLoading">
+            Loading...
+          </div>
+          <div v-else-if="relatedConcertsByTour.length > 0">
+            <div class="card-block">
+              <div v-for="tourHolder in relatedConcertsByTour" :key="tourHolder.concerts[0].id" class="pb-4">
+                <tour-breadcrumb-row :tour="tourHolder.tour" :tours-by-id="toursById" :key="tourHolder.tour.id" />
+                <template v-for="concert in tourHolder.concerts">
+                  <concert-and-artist-link-row :concert="concert" :compact="hasPoster" :key="concert.id"/>
+                </template>
+              </div>
+            </div>
+          </div>
+          <div v-else>
+            <div class="card-block">
+              <template v-for="concert in relatedConcerts">
+                <concert-and-artist-link-row :concert="concert" :compact="hasPoster" :key="concert.id"/>
+              </template>
+            </div>
           </div>
         </div>
-        <div class="card">
+
+        <div class="card" v-if="venueConcertsLoading || venueConcerts.length">
           <div class="card-header">
             <h2 class="card-title">Additional Venue Concerts</h2>
           </div>
-          <div class="card-block">
-            <ul>
-              <li><a href="#">2012-05-01 :: DMB</a></li>
-              <li><a href="#">2013-07-02 :: DMB</a></li>
-              <li><a href="#">2015-07-06 :: DMB</a></li>
-            </ul>
+          <div class="card-block" v-if="venueConcertsLoading">
+            Loading...
+          </div>
+          <div v-else>
+            <div class="card-block">
+              <template v-for="concert in venueConcerts">
+                <concert-and-artist-link-row :concert="concert" :compact="hasPoster" :key="concert.id"/>
+              </template>
+            </div>
           </div>
         </div>
       </div>
-      <div class="col-sm-6">
+      <div class="col-12 col-md-6" v-if="posterUrl">
         <div class="card">
-          <img class="card-img-top" src="http://meetattheshow.com/Posters/dmb/2017-06-16.jpg?v=b3f5d74a4792c1a6fd3ae5876f60de25"/>
+          <img class="card-img-top" :src="posterUrl"/>
         </div>
       </div>
     </div>
@@ -382,7 +426,170 @@
 </template>
 
 <script>
+  import moment from 'moment';
+  import ConcertAndArtistLinkRow from '../../../../../components/ConcertAndArtistLinkRow';
+  import NextConcertLink from '../../../../../components/NextConcertLink';
+  import PreviousConcertLink from '../../../../../components/PreviousConcertLink';
+  import TourBreadcrumb from '../../../../../components/TourBreadcrumb';
+  import TourBreadcrumbRow from '../../../../../components/TourBreadcrumbRow';
+  import axios from '../../../../../plugins/axios';
+  import stringService from '../../../../../plugins/stringService';
+  import orderBy from 'lodash/orderBy';
+
   export default {
-    scrollToTop: true
-  }
+    scrollToTop: true,
+    components: {
+      ConcertAndArtistLinkRow,
+      NextConcertLink,
+      PreviousConcertLink,
+      TourBreadcrumb,
+      TourBreadcrumbRow,
+    },
+    data() {
+      return {
+        concertLoading: true,
+        concert: {},
+        relatedConcertsLoading: true,
+        relatedConcerts: [],
+        relatedConcertsByTour: [],
+        venueConcertsLoading: true,
+        venueConcerts: [],
+        toursById: {},
+        previousConcert: null,
+        nextConcert: null,
+      };
+    },
+    async asyncData({
+      params,
+      error,
+                    }) {
+      const concertResult = await axios.get(`/api/concerts/${params.year}/${params.month}/${params.day}/${params.slug}`);
+
+      const concert = concertResult.data;
+
+      if (!concert.id) {
+        console.log(concertResult.data);
+        return error({
+          statusCode: 404,
+          message: 'Concert not found',
+          response: concertResult.data,
+        });
+      }
+
+      const [
+        tourResults,
+        venueConcertResults,
+        relatedConcertResults,
+      ] = await Promise.all([
+        axios.get('/api/tours'),
+        axios.get(`/api/venues/${concert.venue.id}/concerts`),
+        axios.get(`/api/concerts/${concert.id}/related?itemsPerPage=15`),
+      ]);
+
+      const toursById = {};
+      for (const tour of tourResults.data.items) {
+        toursById[tour.id] = tour;
+
+        if (tour.children) {
+          for (const child of tour.children) {
+            child.parent = tour.id;
+            toursById[child.id] = child;
+          }
+        }
+      }
+
+      const relatedConcerts = orderBy(relatedConcertResults.data.items, ['date'], ['desc']);
+
+      let previousConcert;
+      let nextConcert;
+      const relatedConcertsByTour = [];
+      for (const relatedConcert of relatedConcerts) {
+        if (!relatedConcertsByTour.length || relatedConcertsByTour[relatedConcertsByTour.length - 1].tour.id !== relatedConcert.tour.id) {
+          relatedConcertsByTour.push({
+            tour: toursById[relatedConcert.tour.id],
+            concerts: [],
+          });
+        }
+
+        relatedConcertsByTour[relatedConcertsByTour.length - 1].concerts.push(relatedConcert);
+
+        if (moment(relatedConcert.date).isBefore(concert.date) && (!previousConcert || moment(relatedConcert.date).isAfter(previousConcert.date))) {
+          previousConcert = relatedConcert;
+        }
+
+        if (moment(relatedConcert.date).isAfter(concert.date) && (!nextConcert || moment(relatedConcert.date).isBefore(nextConcert.date))) {
+          nextConcert = relatedConcert;
+        }
+      }
+
+      concert.tour = toursById[concert.tour.id];
+
+      return {
+        concertLoading: false,
+        concert,
+        toursById,
+        relatedConcertsLoading: false,
+        relatedConcerts,
+        relatedConcertsByTour,
+        venueConcertsLoading: false,
+        venueConcerts: venueConcertResults.data.items.filter((venueConcert) => {
+          return venueConcert.id !== concert.id;
+        }),
+        previousConcert,
+        nextConcert,
+      };
+    },
+    computed: {
+      concertDate() {
+        return moment(this.concert.date);
+      },
+      hasPoster() {
+        return !!this.concert.poster_url;
+      },
+      posterUrl() {
+        if (!this.concert.poster_url) {
+          return '';
+        }
+
+        return `${process.env.apiUrl}${this.concert.poster_url}`;
+      },
+    },
+    filters: {
+      toDate(value) {
+        return moment(value).format('YYYY-MM-DD');
+      },
+    },
+    methods: {
+      slugify: stringService.slugify
+    },
+    head() {
+      let alternateVenueName = '';
+      let hasAlternateVenueName;
+      if (this.concert.name !== this.concert.venue.name) {
+        hasAlternateVenueName = true;
+        alternateVenueName = ` (${this.concert.venue.name})`;
+      }
+
+      return {
+        title: `${this.concertDate.format('YYYY-MM-DD')} - ${this.concert.name} - ${this.concert.artist.name}`,
+        meta: [{
+          hid: "description",
+          property: "description",
+          content: `${this.concert.artist.name} concert at ${this.concert.name}${alternateVenueName} on ${this.concertDate.format('MMMM d, YYYY')}`,
+        }, {
+          hid: "keywords",
+          property: "keywords",
+          content: `${this.concert.artist.name},${this.concert.artist.abbr},concert,show,${hasAlternateVenueName ? this.concert.name + ',' : ''}${this.concert.venue.name},${this.concertDate.format('MMMM,YYYY,YYYY-MM-DD')}`,
+        }, {
+          hid: "og:band",
+          property: "og:band",
+          content: this.concert.artist.name,
+        }, {
+          hid: "og:type",
+          property: "og:type",
+          content: 'album',
+        }]
+      };
+    },
+  };
 </script>
