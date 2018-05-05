@@ -131,7 +131,7 @@
       </div>
     </div>
     <div class="row">
-      <div class="col">
+      <div class="col-12 col-lg-6">
         <div class="card" v-if="relatedConcertsLoading || relatedConcerts.length">
           <div class="card-header">
             <h2 class="card-title">Related Concerts</h2>
@@ -157,7 +157,13 @@
             </div>
           </div>
         </div>
-
+      </div>
+      <div class="col-12 col-lg-6" v-if="posterUrl">
+        <div class="card">
+          <a :href="posterUrl"><img class="card-img-top" :src="posterUrl"/></a>
+        </div>
+      </div>
+      <div class="col-12 col-lg-6">
         <div class="card" v-if="venueConcertsLoading || venueConcerts.length">
           <div class="card-header">
             <h2 class="card-title">Additional Venue Concerts</h2>
@@ -172,11 +178,6 @@
               </template>
             </div>
           </div>
-        </div>
-      </div>
-      <div class="col-12 col-md-6" v-if="posterUrl">
-        <div class="card">
-          <img class="card-img-top" :src="posterUrl"/>
         </div>
       </div>
     </div>
