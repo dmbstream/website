@@ -1,9 +1,15 @@
 <template>
-  <main class="main">
+  <main :class="['main', {'hide-menu': hideMenu}]">
     <header class="header">
-      <div class="header__logo">
-        <h1><nuxt-link to="/">DMB</nuxt-link></h1>
-      </div>
+      <ul class="top-nav mr-4">
+        <li><a @click="toggleMenu"><img
+          src="//www.gstatic.com/images/icons/material/system/1x/menu_white_24dp.png"
+          srcset="//www.gstatic.com/images/icons/material/system/2x/menu_white_24dp.png 2x"
+          aria-hidden="true"
+        /></a></li>
+        <li><nuxt-link to="/"><i class="zmdi zmdi-home"></i></nuxt-link></li>
+      </ul>
+
       <form class="search">
         <div class="search__inner">
           <input type="text" class="search__text" placeholder="Search for concerts by date, songs, venues...">
@@ -15,7 +21,7 @@
         <li><a href="#" class="profile__nav"><span class="profile"></span></a></li>
       </ul>
     </header>
-    <aside class="sidebar">
+    <aside class="sidebar sidebar-menu">
       <ul class="navigation">
         <li class="navigation__active"><nuxt-link to="/">Home</nuxt-link></li>
         <li><nuxt-link to="/concerts">Concerts</nuxt-link></li>
@@ -49,9 +55,19 @@
       Chat,
       Player,
     },
+    data() {
+      return {
+        hideMenu: true,
+      };
+    },
     head: {
       bodyAttrs: {
         "data-ma-theme": 'blue',
+      },
+    },
+    methods: {
+      toggleMenu() {
+        this.hideMenu = !this.hideMenu;
       },
     },
   };

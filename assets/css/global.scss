@@ -2,6 +2,16 @@
 @import "./_footer";
 @import "./_details";
 
+main.hide-menu {
+  .sidebar-menu {
+    display: none;
+  }
+
+  section.content {
+    padding-left: 30px !important;
+  }
+}
+
 .sidebar {
   padding-bottom: 104px !important;
 }
