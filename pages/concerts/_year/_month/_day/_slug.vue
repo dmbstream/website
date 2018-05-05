@@ -288,8 +288,9 @@
       let hasMoreTokens = true;
       for (const line of concert.notes.trim().split('\n')) {
         let isToken = false;
-        if (line) {
-          const token = line[0];
+        const trimmedLine = line.trim();
+        if (hasMoreTokens && trimmedLine) {
+          const token = trimmedLine[0];
           switch (token) {
             case '!':
             case '@':
@@ -299,20 +300,19 @@
             case '^':
             case '&':
             case '*':
-              additionalDataByToken[token] = line.slice(1).trim();
+              additionalDataByToken[token] = trimmedLine.slice(1).trim();
               isToken = true;
               break;
             default:
+              hasMoreTokens = false;
               break;
           }
         } else if (hasMoreTokens) {
           hasMoreTokens = false;
-          // Skip the first blank line between additional details and other notes
-          isToken = true;
         }
 
-        if (!hasMoreTokens && !isToken) {
-          noteLines.push(line);
+        if (!isToken && (noteLines.length || trimmedLine)) {
+          noteLines.push(trimmedLine);
         }
       }
 
