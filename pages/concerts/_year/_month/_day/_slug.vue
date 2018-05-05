@@ -82,293 +82,51 @@
     <div class="card">
       <div class="card-block">
         <ol class="tracklist">
-          <li class="tracklist-row">
+          <li class="tracklist-row" v-for="(track, index) of concert.tracks" :key="track.id">
             <div class="tracklist-col position-outer">
-              <div class="tracklist-play-pause tracklist-middle-align">
+              <div :class="['tracklist-play-pause', {'tracklist-middle-align': !track.hasAdditionalData, 'tracklist-top-align': track.hasAdditionalData}]">
                 <i class="zmdi zmdi-play"></i>
               </div>
-              <div class="position tracklist-middle-align">1.</div>
+              <div :class="['position', {'tracklist-middle-align': !track.hasAdditionalData, 'tracklist-top-align': track.hasAdditionalData}]">{{ index + 1 }}.</div>
             </div>
             <div class="tracklist-col name">
-              <div class="tracklist-middle-align">
-                <span>Intro</span>
-              </div>
-            </div>
-            <div class="tracklist-col more">
-              <div class="tracklist-middle-align">
-                <span>&hellip;</span>
-              </div>
-            </div>
-            <div class="tracklist-col tracklist-col-duration">
-              <div class="tracklist-middle-align">
-                <span>0:42</span>
-              </div>
-            </div>
-          </li>
-          <li class="tracklist-row">
-            <div class="tracklist-col position-outer">
-              <div class="tracklist-play-pause tracklist-middle-align">
-                <i class="zmdi zmdi-play"></i>
-              </div>
-              <div class="position tracklist-middle-align">2.</div>
-            </div>
-            <div class="tracklist-col name">
-              <div class="tracklist-middle-align">
-                <span>Don't Drink the Water</span>
-              </div>
-            </div>
-            <div class="tracklist-col more">
-              <div class="tracklist-middle-align">
-                <span>&hellip;</span>
-              </div>
-            </div>
-            <div class="tracklist-col tracklist-col-duration">
-              <div class="tracklist-middle-align">
-                <span>10:42</span>
-              </div>
-            </div>
-          </li>
-          <li class="tracklist-row">
-            <div class="tracklist-col position-outer">
-              <div class="tracklist-play-pause tracklist-middle-align">
-                <i class="zmdi zmdi-play"></i>
-              </div>
-              <div class="position tracklist-middle-align">3.</div>
-            </div>
-            <div class="tracklist-col name">
-              <div class="tracklist-middle-align">
-                <span>You &amp; Me</span>
-              </div>
-            </div>
-            <div class="tracklist-col more">
-              <div class="tracklist-middle-align">
-                <span>&hellip;</span>
-              </div>
-            </div>
-            <div class="tracklist-col tracklist-col-duration">
-              <div class="tracklist-middle-align">
-                <span>4:44</span>
-              </div>
-            </div>
-          </li>
-          <li class="tracklist-row">
-            <div class="tracklist-col position-outer">
-              <div class="tracklist-play-pause tracklist-middle-align">
-                <i class="zmdi zmdi-play"></i>
-              </div>
-              <div class="position tracklist-middle-align">4.</div>
-            </div>
-            <div class="tracklist-col name">
-              <div class="tracklist-middle-align">
-                <span>Halloween ></span>
-              </div>
-            </div>
-            <div class="tracklist-col more">
-              <div class="tracklist-middle-align">
-                <span>&hellip;</span>
-              </div>
-            </div>
-            <div class="tracklist-col tracklist-col-duration">
-              <div class="tracklist-middle-align">
-                <span>5:12</span>
-              </div>
-            </div>
-          </li>
-          <li class="tracklist-row">
-            <div class="tracklist-col position-outer">
-              <div class="tracklist-play-pause tracklist-top-align">
-                <i class="zmdi zmdi-play"></i>
-              </div>
-              <div class="position tracklist-top-align">5.</div>
-            </div>
-            <div class="tracklist-col name">
-              <div class="tracklist-top-align">
-                <div class="track__name">Ants Marching ></div>
+              <div class="tracklist-top-align" v-if="track.hasAdditionalData">
+                <div class="track__name">{{ track.name }}</div>
                 <div class="track__note">
-                  <small>(With Carlos Santana)</small>
+                  <small v-if="track.firstTimePlayed" class="pr-4">&starf; {{ track.firstTimePlayed }}</small>
+                  <small v-if="track.additionalData">({{ track.additionalData }})</small>
                 </div>
               </div>
+              <div class="tracklist-middle-align" v-else>
+                <span>{{ track.name }}</span>
+              </div>
             </div>
             <div class="tracklist-col more">
-              <div class="tracklist-middle-align">
+              <div :class="[{'tracklist-middle-align': !track.hasAdditionalData, 'tracklist-top-align': track.hasAdditionalData}]">
                 <span>&hellip;</span>
               </div>
             </div>
             <div class="tracklist-col tracklist-col-duration">
-              <div class="tracklist-middle-align">
-                <span>8:03</span>
-              </div>
-            </div>
-          </li>
-          <li class="tracklist-row">
-            <div class="tracklist-col position-outer">
-              <div class="tracklist-play-pause tracklist-top-align">
-                <i class="zmdi zmdi-play"></i>
-              </div>
-              <div class="position tracklist-top-align">6.</div>
-            </div>
-            <div class="tracklist-col name">
-              <div class="tracklist-top-align">
-                <div class="track__name">Stay</div>
-                <div class="track__note">
-                  <small>(With The Lovely Ladies)</small>
-                </div>
-              </div>
-            </div>
-            <div class="tracklist-col more">
-              <div class="tracklist-middle-align">
-                <span>&hellip;</span>
-              </div>
-            </div>
-            <div class="tracklist-col tracklist-col-duration">
-              <div class="tracklist-middle-align">
-                <span>4:07</span>
+              <div :class="[{'tracklist-middle-align': !track.hasAdditionalData, 'tracklist-top-align': track.hasAdditionalData}]">
+                <span>{{ track.duration }}</span>
               </div>
             </div>
           </li>
         </ol>
-        <!--                            <table class="table table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Title</th>
-                                                <th colspan="2" class="text-right"><i class="zmdi zmdi-time"></i></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>Intro</td>
-                                                <td class="table-col-sm"></td>
-                                                <td class="table-col-sm text-right">0:42</td>
-                                            </tr>
-                                            <tr>
-                                                <td>2</td>
-                                                <td>Don't Drink the Water</td>
-                                                <td class="table-col-sm">&hellip;</td>
-                                                <td class="table-col-sm text-right">10:24</td>
-                                            </tr>
-                                            <tr>
-                                                <td>3</td>
-                                                <td>You &amp; Me</td>
-                                                <td class="table-col-sm"></td>
-                                                <td class="table-col-sm text-right">4:44</td>
-                                            </tr>
-                                            <tr>
-                                                <td>4</td>
-                                                <td>Halloween ></td>
-                                                <td class="table-col-sm"></td>
-                                                <td class="table-col-sm text-right">5:12</td>
-                                            </tr>
-                                            <tr>
-                                                <td>5</td>
-                                                <td class="track__with__note">
-                                                    <div class="track__name">
-                                                        Ants Marching >
-                                                    </div>
-                                                    <div class="track__note">
-                                                       <small>(With Carlos Santana)</small>
-                                                    </div>
-
-                                                </td>
-                                                <td class="table-col-sm"></td>
-                                                <td class="table-col-sm text-right">8:03</td>
-                                            </tr>
-                                            <tr>
-                                                <td>6</td>
-                                                <td class="track__with__note">
-                                                    <div class="track__name">
-                                                        Stay
-                                                    </div>
-                                                    <div class="track__note">
-                                                       <small>(With The Lovely Ladies)</small>
-                                                    </div>
-                                                </td>
-                                                <td class="table-col-sm"></td>
-                                                <td class="table-col-sm text-right">4:07</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>-->
       </div>
-      <!--
-                              <div class="card-block">
-                                  <table class="table table-hover">
-                                      <thead>
-                                          <tr>
-                                              <th>#</th>
-                                              <th>Title</th>
-                                              <th colspan="2" class="text-right"><i class="zmdi zmdi-time"></i></th>
-                                          </tr>
-                                      </thead>
-                                      <tbody>
-                                          <tr>
-                                              <td>1</td>
-                                              <td>Intro</td>
-                                              <td class="table-col-sm"></td>
-                                              <td class="table-col-sm text-right">0:42</td>
-                                          </tr>
-                                          <tr>
-                                              <td>2</td>
-                                              <td>Don't Drink the Water</td>
-                                              <td class="table-col-sm">&hellip;</td>
-                                              <td class="table-col-sm text-right">10:24</td>
-                                          </tr>
-                                          <tr>
-                                              <td>3</td>
-                                              <td>You &amp; Me</td>
-                                              <td class="table-col-sm"></td>
-                                              <td class="table-col-sm text-right">4:44</td>
-                                          </tr>
-                                          <tr>
-                                              <td>4</td>
-                                              <td>Halloween ></td>
-                                              <td class="table-col-sm"></td>
-                                              <td class="table-col-sm text-right">5:12</td>
-                                          </tr>
-                                          <tr>
-                                              <td>5</td>
-                                              <td class="track__with__note">
-                                                  <div class="track__name">
-                                                      Ants Marching >
-                                                  </div>
-                                                  <div class="track__note">
-                                                     <small>(With Carlos Santana)</small>
-                                                  </div>
-
-                                              </td>
-                                              <td class="table-col-sm"></td>
-                                              <td class="table-col-sm text-right">8:03</td>
-                                          </tr>
-                                          <tr>
-                                              <td>6</td>
-                                              <td class="track__with__note">
-                                                  <div class="track__name">
-                                                      Stay
-                                                  </div>
-                                                  <div class="track__note">
-                                                     <small>(With The Lovely Ladies)</small>
-                                                  </div>
-                                              </td>
-                                              <td class="table-col-sm"></td>
-                                              <td class="table-col-sm text-right">4:07</td>
-                                          </tr>
-                                      </tbody>
-                                  </table>
-                              </div>
-      -->
-      <div class="card-block" v-if="concert.notes">
-        <template v-for="line of concert.notes.trim().split('\n')">
+      <div class="card-block" v-if="noteLines.length">
+        <template v-for="(line, index) of noteLines">
           {{ line }}
-          <br :key="line" />
+          <br :key="`${index}${line}}`" />
         </template>
       </div>
     </div>
 
     <div class="card">
       <div class="card-block" v-if="concert.recording_information">
-        <template v-for="line of concert.recording_information.trim().split('\n')">
+        <template v-for="(line, index) of concert.recording_information.trim().split('\n')">
           {{ line }}
-          <br :key="line" />
+          <br :key="`${index}${line}}`" />
         </template>
       </div>
     </div>
@@ -457,6 +215,7 @@
         toursById: {},
         previousConcert: null,
         nextConcert: null,
+        noteLines: [],
       };
     },
     async asyncData({
@@ -524,6 +283,64 @@
 
       concert.tour = toursById[concert.tour.id];
 
+      const additionalDataByToken = {};
+      const noteLines = [];
+      let hasMoreTokens = true;
+      for (const line of concert.notes.trim().split('\n')) {
+        let isToken = false;
+        if (line) {
+          const token = line[0];
+          switch (token) {
+            case '!':
+            case '@':
+            case '#':
+            case '$':
+            case '%':
+            case '^':
+            case '&':
+            case '*':
+              additionalDataByToken[token] = line.slice(1).trim();
+              isToken = true;
+              break;
+            default:
+              break;
+          }
+        } else if (hasMoreTokens) {
+          hasMoreTokens = false;
+          // Skip the first blank line between additional details and other notes
+          isToken = true;
+        }
+
+        if (!hasMoreTokens && !isToken) {
+          noteLines.push(line);
+        }
+      }
+
+      for (const track of concert.tracks) {
+        const additionalDataText = [];
+        for (const char of track.additional_info.trim()) {
+          // Skip spaces between characters
+          if (char) {
+            const additionalData = additionalDataByToken[char];
+            if (additionalData) {
+              if (/^first time/ig.test(additionalData)) {
+                track.firstTimePlayed = additionalData;
+              } else {
+                additionalDataText.push(additionalData);
+              }
+            } else {
+              track.name += ` ${char}`;
+            }
+          }
+        }
+
+        if (additionalDataText.length) {
+          track.additionalData = additionalDataText.join(', ');
+        }
+
+        track.hasAdditionalData = track.firstTimePlayed || track.additionalData;
+      }
+
       return {
         concertLoading: false,
         concert,
@@ -537,6 +354,7 @@
         }),
         previousConcert,
         nextConcert,
+        noteLines,
       };
     },
     computed: {
@@ -560,7 +378,7 @@
       },
     },
     methods: {
-      slugify: stringService.slugify
+      slugify: stringService.slugify,
     },
     head() {
       let alternateVenueName = '';

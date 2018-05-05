@@ -57,7 +57,7 @@
   }
 
   .tracklist-row:focus .more, .tracklist-row:hover .more {
-    display: block
+    visibility: visible;
   }
 
   .tracklist-col.position-outer {
@@ -73,7 +73,7 @@
   }
 
   .tracklist-row .more {
-    display: none;
+    visibility: hidden;
     text-align: right;
     padding-right: 1em
   }
