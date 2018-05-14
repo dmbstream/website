@@ -15,7 +15,8 @@
       <!--
       <div class="actions">
         <a href="#" class="actions__item" title="Favorite"><i class="zmdi zmdi-favorite-outline"></i></a>
-      </div>-->
+      </div>
+      -->
     </header>
 
     <p>
@@ -85,7 +86,7 @@
           <li class="tracklist-row" v-for="(track, index) of concert.tracks" :key="track.id">
             <div class="tracklist-col position-outer">
               <div :class="['tracklist-play-pause', {'tracklist-middle-align': !track.hasAdditionalData, 'tracklist-top-align': track.hasAdditionalData}]">
-                <i class="zmdi zmdi-play"></i>
+                <a @click="playTrack(track, index)"><i class="zmdi zmdi-play"></i></a>
               </div>
               <div :class="['position', {'tracklist-middle-align': !track.hasAdditionalData, 'tracklist-top-align': track.hasAdditionalData}]">{{ index + 1 }}.</div>
             </div>
@@ -380,6 +381,12 @@
     },
     methods: {
       slugify: stringService.slugify,
+      playTrack(track, index) {
+        const tracks = this.concert.tracks.slice(index + 1);
+        this.$store.dispatch('clearQueue');
+        this.$store.dispatch('queue', tracks);
+        this.$store.dispatch('playNext');
+      },
     },
     head() {
       let alternateVenueName = '';

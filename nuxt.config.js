@@ -32,9 +32,17 @@ module.exports = {
   },
   loading: { color: '#3B8070' },
   plugins: [
-    '~/plugins/vuebar.js',
+    '~/plugins/axios',
+    '~/plugins/stringService',
+    '~/plugins/vuebar',
+    { src: '~/plugins/player', ssr: false },
   ],
   build: {
+    vendor: [
+      'axios',
+      'vuebar',
+      'gapless.js',
+    ],
     /*
     ** Run ESLint on save
     */
