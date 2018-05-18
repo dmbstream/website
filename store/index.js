@@ -11,6 +11,7 @@ const store = () => {
       currentTrack: null,
       currentTime: 0,
       duration: 0,
+      volume: 60,
     },
     mutations: {
       clearQueue(state) {
@@ -41,6 +42,10 @@ const store = () => {
           Vue.set(state.currentTime, 0);
           Vue.set(state.duration, 0);
         }
+      },
+      setVolume(state, volume) {
+        player.setVolume(volume / 100);
+        Vue.set(state.volume, volume);
       },
     },
     actions: {

@@ -1,31 +1,46 @@
 <template>
   <footer class="footer">
     <div class="footer__details">
-      <div class="footer__details__song">When the world ends</div>
-      <div class="footer__details__song">d+t :: 2016-02-14</div>
+      <div v-if="currentTrack">
+        <div class="footer__details__song">{{ currentTrack.name }}</div>
+        <div class="footer__details__song">{{ currentTrack.artist.abbr }} :: {{ concertDate | toDate }}</div>
+      </div>
     </div>
     <div class="footer__player">
       <div class="footer__player__controls">
+        <!--
         <button class="control-button control-button--active footer__player__controls__secondary" title="Enable shuffle"><i class="zmdi zmdi-shuffle"></i></button>
-        <button class="control-button control-button--disabled" title="Previous"><i class="zmdi zmdi-skip-previous"></i></button>
-        <button class="control-button control-button--play control-button--circled" title="Play"><i class="zmdi zmdi-play"></i></button>
-        <button class="control-button" title="Next"><i class="zmdi zmdi-skip-next"></i></button>
+        -->
+        <button class="control-button control-button--disabled" title="Previous" @click.prevent="playPrevious()"><i class="zmdi zmdi-skip-previous"></i></button>
+        <button
+          class="control-button control-button--play control-button--circled"
+          title="Play"
+          @click.prevent="togglePlayPause()"
+          v-show="isPaused"><i class="zmdi zmdi-play"></i></button>
+        <button
+          class="control-button control-button--play control-button--circled"
+          title="Pause"
+          @click.prevent="togglePlayPause()"
+          v-show="!isPaused"><i class="zmdi zmdi-pause"></i></button>
+        <button class="control-button" title="Next" @click.prevent="playNext()"><i class="zmdi zmdi-skip-next"></i></button>
+        <!--
         <button class="control-button footer__player__controls__secondary" title="Enable repeat"><i class="zmdi zmdi-repeat"></i></button>
+        -->
       </div>
       <div class="footer__player__playback">
-        <div class="footer__player__playback__progressTime">00:00</div>
+        <div v-if="currentTrack" class="footer__player__playback__progressTime">{{ currentTime | toDuration }}</div>
         <div class="footer__player__playback__progress">
           <div class="progress">
             <div
               class="progress-bar"
               role="progressbar"
-              style="width: 42%"
-              aria-valuenow="50"
+              :style="{width: `${progressAsPercent}%`}"
+              :aria-valuenow="currentTime"
               aria-valuemin="0"
-              aria-valuemax="100"></div>
+              :aria-valuemax="duration"></div>
           </div>
         </div>
-        <div class="footer__player__playback__totalTime">06:42</div>
+        <div v-if="currentTrack" class="footer__player__playback__totalTime">{{ duration | toDuration }}</div>
       </div>
     </div>
     <div class="footer__actions">
@@ -41,8 +56,8 @@
                 <div
                   class="progress-bar"
                   role="progressbar"
-                  style="width: 72%"
-                  aria-valuenow="50"
+                  :style="{width: `${volume}%`}"
+                  :aria-valuenow="volume"
                   aria-valuemin="0"
                   aria-valuemax="100"></div>
               </div>
@@ -55,14 +70,62 @@
 </template>
 
 <script>
+  import moment from 'moment';
+  import momentDuration from 'moment-duration-format';
+  import player from '../plugins/player';
+
+  momentDuration(moment);
+
   export default {
     computed: {
-      currentTrack() {
-        return this.$store.currentTrack;
-      }
-    }
-    methods: {
+      concertDate() {
+        if (this.currentTrack) {
+          return moment(this.currentTrack.concert.date);
+        }
 
+        return moment();
+      },
+      currentTrack() {
+        return this.$store.state.currentTrack;
+      },
+      currentTime() {
+        return this.$store.state.currentTime;
+      },
+      duration() {
+        return this.$store.state.duration;
+      },
+      progressAsPercent() {
+        return this.currentTime / this.duration;
+      },
+      volume() {
+        return this.$store.state.volume;
+      },
+      isPaused() {
+        if (player.currentTrack) {
+          return player.currentTrack.isPaused;
+        }
+
+        return true;
+      },
+    },
+    filters: {
+      toDate(value) {
+        return moment(value).format('YYYY-MM-DD');
+      },
+      toDuration(value) {
+        return moment.duration(value, 'seconds').format('m:ss');
+      }
+    },
+    methods: {
+      togglePlayPause() {
+        this.$store.dispatch('togglePlayPause');
+      },
+      playPrevious() {
+        this.$store.dispatch('playPrevious');
+      },
+      playNext() {
+        this.$store.dispatch('playNext');
+      },
     },
   }
 </script>

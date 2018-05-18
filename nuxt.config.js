@@ -42,6 +42,8 @@ module.exports = {
       'axios',
       'vuebar',
       'gapless.js',
+      'moment',
+      'moment-duration-format',
     ],
     /*
     ** Run ESLint on save
