@@ -3,7 +3,7 @@
     <div class="footer__details">
       <div v-if="currentTrack">
         <div class="footer__details__song">{{ currentTrack.name }}</div>
-        <div class="footer__details__song">{{ currentTrack.artist.abbr }} :: {{ concertDate | toDate }}</div>
+        <div class="footer__details__song">{{ currentTrack.concert.artist.abbr }} :: {{ concertDate | toDate }}</div>
       </div>
     </div>
     <div class="footer__player">
@@ -72,11 +72,27 @@
 <script>
   import moment from 'moment';
   import momentDuration from 'moment-duration-format';
-  import player from '../plugins/player';
+  import Gapless from 'gapless.js'
 
   momentDuration(moment);
 
   export default {
+    mounted() {
+      const ctx = this;
+      const player = new Gapless.Queue({
+        onProgress() {
+          ctx.$store.dispatch('updateProgress');
+        },
+        onStartNewTrack() {
+          ctx.$store.dispatch('startNewTrack');
+        },
+        onEnded() {
+          ctx.$store.dispatch('trackEnded');
+        }
+      });
+
+      this.$store.dispatch('loadPlayer', player);
+    },
     computed: {
       concertDate() {
         if (this.currentTrack) {
@@ -95,17 +111,13 @@
         return this.$store.state.duration;
       },
       progressAsPercent() {
-        return this.currentTime / this.duration;
+        return 100 * (this.currentTime / this.duration);
       },
       volume() {
         return this.$store.state.volume;
       },
       isPaused() {
-        if (player.currentTrack) {
-          return player.currentTrack.isPaused;
-        }
-
-        return true;
+        return this.$store.state.isPaused;
       },
     },
     filters: {
@@ -113,7 +125,11 @@
         return moment(value).format('YYYY-MM-DD');
       },
       toDuration(value) {
-        return moment.duration(value, 'seconds').format('m:ss');
+        if (value > 60) {
+          return moment.duration(value, 'seconds').format('m:ss');
+        }
+
+        return moment.duration(value, 'seconds').format('0:ss');
       }
     },
     methods: {

@@ -86,7 +86,7 @@
           <li class="tracklist-row" v-for="(track, index) of concert.tracks" :key="track.id">
             <div class="tracklist-col position-outer">
               <div :class="['tracklist-play-pause', {'tracklist-middle-align': !track.hasAdditionalData, 'tracklist-top-align': track.hasAdditionalData}]">
-                <a @click="playTrack(track, index)"><i class="zmdi zmdi-play"></i></a>
+                <a @click.prevent="playTrack(track, index)"><i class="zmdi zmdi-play"></i></a>
               </div>
               <div :class="['position', {'tracklist-middle-align': !track.hasAdditionalData, 'tracklist-top-align': track.hasAdditionalData}]">{{ index + 1 }}.</div>
             </div>
@@ -195,6 +195,7 @@
   import axios from '../../../../../plugins/axios';
   import stringService from '../../../../../plugins/stringService';
   import orderBy from 'lodash/orderBy';
+  import pick from 'lodash/pick';
 
   export default {
     scrollToTop: true,
@@ -319,6 +320,7 @@
       }
 
       for (const track of concert.tracks) {
+        track.concert = pick(concert, ['name', 'artist', 'id']);
         const additionalDataText = [];
         for (const char of track.additional_info.trim()) {
           // Skip spaces between characters
@@ -382,10 +384,8 @@
     methods: {
       slugify: stringService.slugify,
       playTrack(track, index) {
-        const tracks = this.concert.tracks.slice(index + 1);
-        this.$store.dispatch('clearQueue');
-        this.$store.dispatch('queue', tracks);
-        this.$store.dispatch('playNext');
+        const tracks = this.concert.tracks.slice(index);
+        this.$store.dispatch('play', tracks);
       },
     },
     head() {

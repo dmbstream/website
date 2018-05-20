@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from '../plugins/axios';
-import player from '../plugins/player';
 
 const store = () => {
   return new Vuex.Store({
@@ -12,43 +11,72 @@ const store = () => {
       currentTime: 0,
       duration: 0,
       volume: 60,
+      player: null,
+      isPaused: true,
     },
     mutations: {
+      loadPlayer(state, player) {
+        Vue.set(state, 'player', player);
+      },
       clearQueue(state) {
-        Vue.set(state.queue, []);
+        Vue.set(state, 'queue', []);
         // Retain play history with player queue, but remove all non-played songs
-        player.tracks.length = player.state.currentTrackIdx;
+        state.player.tracks.length = Math.min(state.player.state.currentTrackIdx + 1, state.player.tracks.length);
       },
       queue(state, tracks) {
         for (const track of tracks) {
           state.queue.push(track);
-          player.addTrack({
+          state.player.addTrack({
             trackUrl: track.url_high || track.url_low,
             metadata: track,
           });
         }
       },
       startNewTrack(state, playHistory) {
-        Vue.set(state.history, playHistory);
-        Vue.set(state.currentTrack, player.currentTrack ? player.currentTrack.metadata : null);
+        const tracks = state.player.tracks.splice(state.player.state.currentTrackIdx);
+        Vue.set(state, 'queue', tracks.map((track) => track.metadata));
+        Vue.set(state, 'history', playHistory);
+        Vue.set(state, 'currentTrack', state.player.currentTrack ? state.player.currentTrack.metadata : null);
       },
       updateProgress(state) {
-        if (player.currentTrack) {
-          Vue.set(state.currentTrack, player.currentTrack.metadata);
-          Vue.set(state.currentTime, player.currentTrack.currentTime);
-          Vue.set(state.duration, player.currentTrack.duration);
+        if (state.player.currentTrack) {
+          Vue.set(state, 'currentTrack', state.player.currentTrack.metadata);
+          Vue.set(state, 'currentTime', state.player.currentTrack.currentTime);
+          Vue.set(state, 'duration', state.player.currentTrack.duration);
+          Vue.set(state, 'isPaused', state.player.currentTrack.isPaused);
         } else {
-          Vue.set(state.currentTrack, null);
-          Vue.set(state.currentTime, 0);
-          Vue.set(state.duration, 0);
+          Vue.set(state, 'currentTrack', null);
+          Vue.set(state, 'currentTime', 0);
+          Vue.set(state, 'duration', 0);
+          Vue.set(state, 'isPaused', true);
+        }
+      },
+      togglePlayPause(state) {
+        state.player.togglePlayPause();
+        if (state.player.currentTrack) {
+          Vue.set(state, 'isPaused', state.player.currentTrack.isPaused);
+        } else {
+          Vue.set(state, 'isPaused', true);
         }
       },
       setVolume(state, volume) {
-        player.setVolume(volume / 100);
-        Vue.set(state.volume, volume);
+        state.player.setVolume(volume / 100);
+        Vue.set(state, 'volume', volume);
       },
     },
     actions: {
+      async play(context, tracks) {
+        const isPlaying = context.state.player.currentTrack && !context.state.player.currentTrack.isPaused;
+        context.state.player.pauseAll();
+        context.commit('clearQueue');
+        context.commit('queue', tracks);
+
+        if (isPlaying) {
+          context.dispatch('playNext');
+        } else {
+          context.state.player.play();
+        }
+      },
       async clearQueue(context) {
         context.commit('clearQueue');
       },
@@ -59,23 +87,26 @@ const store = () => {
           context.commit('queue', [tracks]);
         }
       },
-      async togglePlayPause() {
-        player.togglePlayPause();
+      async loadPlayer(context, player) {
+        context.commit('loadPlayer', player);
       },
-      async playNext() {
-        player.playNext();
+      async togglePlayPause(context) {
+        context.commit('togglePlayPause');
+      },
+      async playNext(context) {
+        context.state.player.playNext();
       },
       async playPrevious(context) {
         // Less than 3 seconds, then play previous
         if (context.state.currentTime < 3) {
-          player.playPrevious();
+          context.state.player.playPrevious();
         } else {
           context.dispatch('seek');
         }
       },
       async seek(context, to) {
-        if (player.currentTrack) {
-          player.currentTrack.seek(to);
+        if (context.state.player.currentTrack) {
+          context.state.player.currentTrack.seek(to);
         }
       },
       async setVolume(context, volume) {

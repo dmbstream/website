@@ -35,7 +35,6 @@ module.exports = {
     '~/plugins/axios',
     '~/plugins/stringService',
     '~/plugins/vuebar',
-    { src: '~/plugins/player', ssr: false },
   ],
   build: {
     vendor: [
