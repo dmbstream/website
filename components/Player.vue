@@ -45,7 +45,7 @@
     </div>
     <div class="footer__actions">
       <ul>
-        <li><a href="#"><i class="zmdi zmdi-playlist-audio zmdi-hc-2x"></i></a></li>
+        <li><nuxt-link :to="{name: 'queue'}"><i class="zmdi zmdi-playlist-audio zmdi-hc-2x"></i></nuxt-link></li>
         <li class="volume">
           <div class="volume-row">
             <div class="volume-icon">
