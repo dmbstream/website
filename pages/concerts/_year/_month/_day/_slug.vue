@@ -20,8 +20,8 @@
     </header>
 
     <p>
-      <button type="button" class="btn btn-success btn-wide waves-effect">Play</button>
-      <button type="button" class="btn btn-secondary btn-wide waves-effect">Add to Queue</button>
+      <button @click.prevent="playTrack(null, 0)" type="button" class="btn btn-success btn-wide waves-effect">Play</button>
+      <button @click.prevent="queueAll()" type="button" class="btn btn-secondary btn-wide waves-effect">Add to Queue</button>
     </p>
 
     <div class="card">
@@ -386,6 +386,12 @@
       playTrack(track, index) {
         const tracks = this.concert.tracks.slice(index);
         this.$store.dispatch('play', tracks);
+      },
+      queue(track) {
+        this.$store.dispatch('queue', track);
+      },
+      queueAll() {
+        this.$store.dispatch('queue', this.concert.tracks);
       },
     },
     head() {
