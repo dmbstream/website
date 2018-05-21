@@ -2,7 +2,7 @@
   <footer class="footer">
     <div class="footer__details">
       <div v-if="currentTrack">
-        <div class="footer__details__song">{{ currentTrack.name }}</div>
+        <div class="footer__details__song"><strong>{{ currentTrack.name }}</strong></div>
         <div class="footer__details__song">{{ currentTrack.concert.artist.abbr }} :: {{ concertDate | toDate }}</div>
       </div>
     </div>
@@ -11,14 +11,14 @@
         <!--
         <button class="control-button control-button--active footer__player__controls__secondary" title="Enable shuffle"><i class="zmdi zmdi-shuffle"></i></button>
         -->
-        <button class="control-button control-button--disabled" title="Previous" @click.prevent="playPrevious()"><i class="zmdi zmdi-skip-previous"></i></button>
+        <button class="control-button" title="Previous" @click.prevent="playPrevious()"><i class="zmdi zmdi-skip-previous"></i></button>
         <button
           class="control-button control-button--play control-button--circled"
           title="Play"
           @click.prevent="togglePlayPause()"
           v-show="isPaused"><i class="zmdi zmdi-play"></i></button>
         <button
-          class="control-button control-button--play control-button--circled"
+          class="control-button control-button--pause control-button--circled"
           title="Pause"
           @click.prevent="togglePlayPause()"
           v-show="!isPaused"><i class="zmdi zmdi-pause"></i></button>
