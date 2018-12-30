@@ -13,6 +13,16 @@ const store = () => {
       volume: 60,
       player: null,
       isPaused: true,
+      user: null,
+      isLoadingChatMessages: true,
+      stickyMessage: null,
+      activeUsers: [],
+      chatMessages: [],
+    },
+    getters: {
+      isAuthenticated(state) {
+        return !!state.user;
+      },
     },
     mutations: {
       loadPlayer(state, player) {
@@ -62,6 +72,18 @@ const store = () => {
       setVolume(state, volume) {
         state.player.setVolume(volume / 100);
         Vue.set(state, 'volume', volume);
+      },
+      setIsLoadingChatMessages(state, isLoading) {
+        Vue.set(state, 'isLoadingChatMessages', isLoading);
+      },
+      setStickyMessage(state, stickyMessage) {
+        Vue.set(state, 'stickyMessage', stickyMessage);
+      },
+      setActiveUsers(state, activeUsers) {
+        Vue.set(state, 'activeUsers', activeUsers);
+      },
+      setChatMessages(state, messages) {
+        Vue.set(state, 'chatMessages', messages);
       },
     },
     actions: {
@@ -134,6 +156,18 @@ const store = () => {
         });
 
         context.commit('startNewTrack', playHistory);
+      },
+      async loadChatMessageHistory(context, lastMessageId) {
+        try {
+          context.commit('setIsLoadingChatMessages', true);
+          const chatMessagesResult = await axios.get(`/api/chatmessages/history?lastMessageId=${lastMessageId || ''}`);
+          context.commit('setStickyMessage', chatMessagesResult.data.sticky_message);
+          context.commit('setActiveUsers', chatMessagesResult.data.active_users || []);
+          context.commit('setChatMessages', chatMessagesResult.data.items || []);
+          context.commit('setLoadingChatMessages', false);
+        } catch (ex) {
+          // TODO: Do something useful here like show a growl message or exponentially retry
+        }
       },
     },
   });

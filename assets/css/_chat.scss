@@ -11,7 +11,11 @@
 }
 
 .chat-row:focus, .chat-row:hover {
-  background-color: rgba(0, 0, 0, .03)
+  background-color: rgba(0, 0, 0, .03);
+}
+
+.chat-system-message {
+  background: #fff7b1;
 }
 
 .chat-author {

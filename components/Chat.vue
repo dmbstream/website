@@ -1,28 +1,27 @@
 <template>
   <div class="card">
     <div class="d-flex h-100 align-items-start flex-column">
-      <div class="card-block" v-if="chatLoading">
-        Loading...
-      </div>
-      <div v-else>
-        <a href="#" class="w-100 p-3 breadcrumb">
-          <div class="d-flex w-100 justify-content-between">
-            <h2 class="card-title">Chat</h2>
-            <small>{{ activeUsers.length }} online</small>
-          </div>
-        </a>
-        <div class="px-3" style="flex:1" v-scroll-bottom>
-          <template v-for="message in messages">
-            <chat-message :message="message" :key="message.id" />
-          </template>
+      <a href="#" class="w-100 p-3 breadcrumb">
+        <div class="d-flex w-100 justify-content-between">
+          <h2 class="card-title">Chat</h2>
+          <small v-if="hasActiveUsers">{{ activeUsers.length }} online</small>
         </div>
-        <chat-new-message />
+      </a>
+      <div class="px-3" style="flex:1" v-chat-scroll="{always: false, smooth: true, scrollonremoved:true}">
+        <template v-for="message in messages">
+          <chat-message :message="message" :key="message.id" />
+        </template>
+        <p v-if="isLoadingChatMessages">
+          Loading messages...
+        </p>
       </div>
+      <chat-new-message :is-connected="isConnected" />
     </div>
   </div>
 </template>
 
 <script>
+  import { HubConnectionBuilder, LogLevel } from '@aspnet/signalr';
   import axios from '../plugins/axios';
 
   import ChatMessage from './ChatMessage';
@@ -35,30 +34,82 @@
     },
     data() {
       return {
-        stickyMessage: null,
-        activeUsers: [],
-        messages: [],
-        chatLoading: true,
+        isConnected: false,
+        loadingMessages: true,
+        chatLoadingError: false,
+        usersTyping: [],
+        typingTimers: {},
       };
     },
-    async mounted() {
-      const chatMessagesResult = await axios.get(`/api/chatmessages`, {
-        params: {
-          includeActiveUsers: true
-        },
-      });
-
-      this.stickyMessage = chatMessagesResult.data.sticky_message;
-      this.activeUsers = chatMessagesResult.data.active_users || [];
-      this.messages = chatMessagesResult.data.items || [];
-      this.chatLoading = false;
-    },
-    directives: {
-      scrollBottom: {
-        componentUpdated (el) {
-          el.scrollTop = el.scrollHeight
-        },
+    computed: {
+      isLoadingChatMessages() {
+        return this.$store.state.isLoadingChatMessages;
       },
+      messages() {
+        const messages = [];
+        const messageCount = this.$store.state.chatMessages.length;
+        for (let i = 0; i < messageCount; i++) {
+          let previousMessage;
+          if (i > 0) {
+            previousMessage = this.$store.state.chatMessages[i - 1];
+          }
+
+          const message = this.$store.state.chatMessages[i];
+          message.previousMessage = previousMessage;
+
+          messages.push(message);
+        }
+
+        return messages;
+      },
+      activeUsers() {
+        return this.$store.state.activeUsers;
+      },
+      hasActiveUsers() {
+        return this.activeUsers && this.activeUsers.length;
+      },
+      stickyMessage() {
+        return this.$store.state.stickyMessage;
+      },
+    },
+    async mounted() {
+      this.$store.dispatch('loadChatMessageHistory');
+
+      try {
+        const connectionInfoResponse = await axios.get(`${process.env.chatUrl}/api/Connect`);
+        const connectionInfo = connectionInfoResponse.data;
+
+        const connection = new HubConnectionBuilder()
+          .withUrl(connectionInfo.url, {
+            accessTokenFactory() {
+              return connectionInfo.accessToken;
+            },
+          })
+          .configureLogging(LogLevel.Information)
+          .build();
+
+        connection.on('newMessage', (message) => {
+          if (message) {
+            // TODO: Clear typing for user
+            this.messages.unshift(message);
+          }
+        });
+
+        connection.on('typing', (user) => {
+          // TODO: If user is not this user, add them to the list of users typing
+        });
+
+        connection.onclose(() => {
+          // TODO: Show message to reconnect?
+          console.log('Disconnected from chat websocket');
+        });
+
+        await connection.start();
+        this.isConnected = true;
+      } catch (ex) {
+        this.chatLoadingError = true;
+        console.error(ex.stack);
+      }
     },
   };
 </script>

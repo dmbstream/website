@@ -1,9 +1,10 @@
 <template>
-  <div class="py-2 chat-row">
+  <div class="py-2 chat-row" :class="{'chat-system-message':!isUserMessage}">
     <div class="d-flex w-100 justify-content-between">
       <nuxt-link
+        v-if="showAuthor"
         :to="{
-          path: 'users',
+          name: 'users-id-slug',
           params: {
             id: message.created_by.id,
             slug: slugify(message.created_by.name),
@@ -50,6 +51,20 @@
       },
     },
     computed: {
+      isUserMessage() {
+        return this.message.created_by.id > 0;
+      },
+      showAuthor() {
+        if (!this.isUserMessage) {
+          return false;
+        }
+
+        if (this.message.previousMessage && this.message.created_by.id === this.message.previousMessage.created_by.id) {
+          return false;
+        }
+
+        return true;
+      },
       body() {
         const body = escapeHtml(this.message.text);
         // TODO: Add in emoji rendering

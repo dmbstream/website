@@ -35,6 +35,10 @@ module.exports = {
     '~/plugins/axios',
     '~/plugins/stringService',
     '~/plugins/vuebar',
+    {
+      src: '~/plugins/vueChatScroll',
+      ssr: false,
+    },
   ],
   build: {
     vendor: [
