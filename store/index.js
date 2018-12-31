@@ -164,7 +164,7 @@ const store = () => {
           context.commit('setStickyMessage', chatMessagesResult.data.sticky_message);
           context.commit('setActiveUsers', chatMessagesResult.data.active_users || []);
           context.commit('setChatMessages', chatMessagesResult.data.items || []);
-          context.commit('setLoadingChatMessages', false);
+          context.commit('setIsLoadingChatMessages', false);
         } catch (ex) {
           // TODO: Do something useful here like show a growl message or exponentially retry
         }
