@@ -1,37 +1,38 @@
 @import "./_chat";
+@import "./_header";
 @import "./_footer";
 @import "./_details";
 
-main.hide-menu {
-  .sidebar-menu {
-    display: none;
-  }
-
-  section.content {
-    padding-left: 30px !important;
-  }
+html,
+body,
+#__nuxt,
+#__layout {
+  height: 100%;
 }
 
-.sidebar {
-  padding-bottom: 104px !important;
+/**
+ * NOTE: holy grail flexbox layout: https://github.com/philipwalton/solved-by-flexbox
+ */
+body {
+  font-family: Roboto,sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #707070;
+  background-color: #f3f3f3;
 }
 
-.profile__nav {
-  padding-left: 0.75rem !important;
+.body {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
 }
 
-.profile {
-  background-image: url(https://loremflickr.com/32/32/dave+matthews);
-  background-size: 32px 32px;
-  border-radius: 50%;
-  margin: -1px;
-  overflow: hidden;
-  position: relative;
-  height: 32px;
-  width: 32px;
-  display: block;
+header, footer {
+  flex: none;
 }
 
-
-
-
+main,
+.main-container {
+  flex: 1 0 auto;
+}

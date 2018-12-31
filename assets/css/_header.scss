@@ -1,0 +1,129 @@
+header {
+  width: 100%;
+  height: 72px;
+  box-shadow: 0 1px 10px rgba(0,0,0,.2);
+  padding: 0 2rem;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  background-color: #2196F3;
+}
+
+header::after {
+  display: block;
+  content: "";
+  clear: both
+}
+
+header a,
+header a:hover,
+header a:focus,
+header a:active {
+  color: #fff;
+}
+
+.head-nav {
+  margin: 0 0 0 auto;
+  padding: 0
+}
+
+.head-nav > li {
+  display: inline-block;
+  vertical-align: middle
+}
+
+.head-nav > li > a {
+  display: block;
+  color: #FFF;
+  border-radius: 2px;
+  text-align: center;
+  line-height: 100%;
+  position: relative;
+  transition: background-color .3s
+}
+
+.head-nav > li > a:not(.header__nav__text) {
+  padding: .5rem .15rem;
+  min-width: 50px
+}
+
+.head-nav > li > a:not(.header__nav__text) > .fas {
+  font-size: 1.65rem;
+  line-height: 100%
+}
+
+.search {
+  flex: 1 0 auto;
+  margin-right: 2.5rem;
+  position: relative
+}
+
+.header_search {
+  position: relative;
+  color: #fff;
+}
+
+.header_search:focus {
+  color: #707070;
+}
+
+.search_text {
+  border: 0;
+  border-radius: 2px;
+  height: 2.9rem;
+  padding: 0 1rem 0 3rem;
+  width: 100%;
+  transition: background-color .3s ease,color .3s ease;
+  background-color: rgba(255,255,255,.2);
+  color: #FFF
+}
+
+.search_text::placeholder {
+  color: #FFF;
+  opacity: 1;
+}
+
+.search_text:focus {
+  background-color: #f3f3f3;
+  color: #464a4c;
+}
+
+.search_text:focus::placeholder {
+  color: #5e6467;
+  opacity: 1;
+}
+
+.search_icon {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 1.3rem;
+  height: 100%;
+  width: 3rem;
+  text-align: center;
+  line-height: 3rem;
+  cursor: pointer;
+  transition: color .3s ease;
+  color: #fff;
+}
+
+.header_search:focus-within .search_icon {
+  color: #5e6467;
+  opacity: 1;
+}
+
+.profile__nav {
+  padding-left: 0.75rem !important;
+}
+
+.profile {
+  background-image: url(https://loremflickr.com/32/32/dave+matthews);
+  background-size: 32px 32px;
+  border-radius: 50%;
+  margin: -1px;
+  overflow: hidden;
+  position: relative;
+  height: 32px;
+  width: 32px;
+  display: block;
+}

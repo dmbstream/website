@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isConnected" class="p-2 w-100">
+  <div v-if="isConnected" class="chat-footer p-2 w-100">
     <!--<emoji-picker :data="data" :custom-data="customEmojis" />-->
     <input
       type="text"
@@ -8,7 +8,7 @@
       v-model="message"
       @keyup.enter="sendMessage"/>
   </div>
-  <div v-else class="p-2 w-100">
+  <div v-else class="chat-footer p-2 w-100">
     <input
       type="text"
       placeholder="Connecting..."

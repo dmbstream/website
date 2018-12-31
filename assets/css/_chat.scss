@@ -1,7 +1,19 @@
-.sidebar-right {
-  left: inherit;
-  right: 0;
-  padding: 72px 0 .5rem;
+.chat-column {
+  width: 400px;
+}
+
+.chat-container {
+  height: 100%;
+}
+
+.chat-header,
+.chat-footer {
+  flex: none;
+  display: flex;
+}
+
+.chat-messages-container {
+  flex: 1 0 auto;
 }
 
 .chat-row {
@@ -11,10 +23,12 @@
 }
 
 .chat-row:focus, .chat-row:hover {
-  background-color: rgba(0, 0, 0, .03);
+  background-color: rgba(0, 0, 0, .04);
 }
 
-.chat-system-message {
+.chat-system-message,
+.chat-system-message:focus,
+.chat-system-message:hover {
   background: #fff7b1;
 }
 
