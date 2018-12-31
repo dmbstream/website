@@ -7,7 +7,7 @@
           <small v-if="hasActiveUsers">{{ activeUsers.length }} online</small>
         </div>
       </a>
-      <div class="chat-messages-container px-3" v-chat-scroll="{always: false, smooth: true, scrollonremoved:true}">
+      <div class="chat-messages-container h-100 pl-3" v-chat-scroll="{always: false, smooth: true, scrollonremoved:true}">
         <template v-for="message in messages">
           <chat-message :message="message" :key="message.id" />
         </template>
@@ -73,7 +73,7 @@
       },
     },
     async mounted() {
-//      this.$store.dispatch('loadChatMessageHistory');
+      this.$store.dispatch('loadChatMessageHistory');
 
       try {
         const connectionInfoResponse = await axios.get(`${process.env.chatUrl}/api/Connect`);

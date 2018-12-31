@@ -1,5 +1,5 @@
 <template>
-  <div class="py-2 chat-row" :class="{'chat-system-message':!isUserMessage}">
+  <div class="py-2 pr-2 chat-row" :class="{'chat-system-message':!isUserMessage}">
     <div class="d-flex w-100 justify-content-between">
       <nuxt-link
         v-if="showAuthor"
