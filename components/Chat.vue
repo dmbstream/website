@@ -15,7 +15,13 @@
           Loading messages...
         </p>
       </div>
-      <chat-new-message :is-connected="isConnected" />
+      <chat-new-message
+        :is-connected="isConnected"
+        :show-loading-error="chatLoadingError"
+        :show-reconnect="showReconnect"
+        @reconnect="onReconnect()"
+        @newMessage="onNewMessage()"
+      />
     </div>
   </div>
 </template>
@@ -34,7 +40,9 @@
     },
     data() {
       return {
+        connection: null,
         isConnected: false,
+        showReconnect: false,
         loadingMessages: true,
         chatLoadingError: false,
         usersTyping: [],
@@ -79,7 +87,7 @@
         const connectionInfoResponse = await axios.get(`${process.env.chatUrl}/api/Connect`);
         const connectionInfo = connectionInfoResponse.data;
 
-        const connection = new HubConnectionBuilder()
+        this.connection = new HubConnectionBuilder()
           .withUrl(connectionInfo.url, {
             accessTokenFactory() {
               return connectionInfo.accessToken;
@@ -88,28 +96,40 @@
           .configureLogging(LogLevel.Information)
           .build();
 
-        connection.on('newMessage', (message) => {
+        this.connection.on('newMessage', (message) => {
           if (message) {
             // TODO: Clear typing for user
             this.messages.unshift(message);
           }
         });
 
-        connection.on('typing', (user) => {
+        this.connection.on('typing', (user) => {
           // TODO: If user is not this user, add them to the list of users typing
         });
 
-        connection.onclose(() => {
-          // TODO: Show message to reconnect?
+        this.connection.onclose(() => {
+          this.isConnected = false;
+          this.showReconnect = true;
+          // TODO: Show message to reconnect
           console.log('Disconnected from chat websocket');
         });
 
-        await connection.start();
+        await this.connection.start();
         this.isConnected = true;
       } catch (ex) {
         this.chatLoadingError = true;
         console.error(ex.stack);
       }
+    },
+    async onReconnect() {
+      if (this.connection) {
+        await this.connection.start();
+      } else {
+        this.chatLoadingError = true;
+      }
+    },
+    async onNewMessage(message) {
+      this.$store.dispatch('newChatMessage', message);
     },
   };
 </script>
